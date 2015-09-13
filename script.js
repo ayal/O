@@ -1,5 +1,3 @@
-alert('touch');
-
 function rnd(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -62,7 +60,6 @@ dowheel(e);
     });
 
 $(document).on('touchmove', function(e){
-    alert(1);
     console.log(e);
 dowheel(e);
 })
