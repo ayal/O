@@ -45,11 +45,11 @@ var ctx = canvas.getContext("2d");
         x += -1 * event.deltaY*2;
 
         var r = rnd(1,30),g = rnd(1,30),b = rnd(1,30);
-        var a = rnd(100,255);
+        var a = rnd(50,255);
 
         ctx.fillStyle = "rgba("+r+","+g+","+b+","+(a/255)+")";
         ctx.beginPath();
-           ctx.arc($('body').height()/2+f(x)[0], $('body').height()/2+f(x)[1], rnd(1,10), 0, 2 * Math.PI, false);
+           ctx.arc($('body').height()/2+f(x)[0], $('body').height()/2+f(x)[1], rnd(1,30), 0, 2 * Math.PI, false);
         ctx.fill();
 
 
