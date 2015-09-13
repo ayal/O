@@ -151,7 +151,7 @@ f = function(x) {
       return [x,Math.floor(Math.sqrt(r*r- x*x))]
     }
     else if (Math.sqrt(r*r- (2*r-x)*(2*r-x))) {
-alert(2)
+
         return [2*r-x,-Math.floor(Math.sqrt(r*r- (2*r-x)*(2*r-x)))]
     }
 
