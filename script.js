@@ -3,7 +3,7 @@ function rnd(min, max) {
 }
 
 var x = 0;
-var r = $('body').height() / 3,origr = r;
+var r = $('body').height() / 3, origr = r;
 
 f = function(x) {
 
@@ -49,7 +49,7 @@ dowheel = function(e) {
 
         ctx.fillStyle = "rgba("+r+","+g+","+b+","+(a/255)+")";
         ctx.beginPath();
-           ctx.arc($('body').height()/2+f(x)[0], $('body').height()/2+f(x)[1], rnd(1,30), 0, 2 * Math.PI, false);
+           ctx.arc($('body').height()/2 - r + f(x)[0], $('body').height()/2+f(x)[1], rnd(1,4), 0, 2 * Math.PI, false);
         ctx.fill();
 
 
