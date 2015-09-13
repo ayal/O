@@ -60,6 +60,7 @@ dowheel(e);
     });
 
 $(document).on('touchmove', function(e){
+    alert(1);
     console.log(e);
 dowheel(e);
 })
