@@ -77,12 +77,10 @@ $(i_v.i_touchlistener || document)
       .data('scrollLeft', i_v.i_elem.scrollLeft());
   })
   .on('touchmove', function (e) {
-    "use strict";
     //check if startThreshold is met
     this.go = (Math.abs(this.pageX - e.originalEvent.touches[0].pageX) > i_v.i_startThreshold || Math.abs(this.pageY - e.originalEvent.touches[0].pageY) > i_v.i_startThreshold);
   })
   .on('touchmove touchend', function (e) {
-    "use strict";
     //check if startThreshold is met
     if (this.go) {
       //set animpar1 to be array
