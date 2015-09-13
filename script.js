@@ -38,8 +38,8 @@ $(function(){
     canvas.height = $('body').height();
 var ctx = canvas.getContext("2d");
 
-    $('canvas').on('mousewheel', function(event) {
 
+dowheel = function(e) {
     console.log(event.deltaX, event.deltaY, event.deltaFactor, f(x));
 
         x += -1 * event.deltaY*2;
@@ -53,7 +53,15 @@ var ctx = canvas.getContext("2d");
         ctx.fill();
 
 
+}
+
+    $('canvas').on('mousewheel', function(event) {
+dowheel(e);
     });
 
+$(document).on('touchmove', function(e){
+    console.log(e);
+dowheel(e);
+})
 
 })
