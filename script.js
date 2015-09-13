@@ -180,7 +180,7 @@ alert(2)
 dowheel = function(e,acc) {
     console.log(event.deltaX, event.deltaY, event.deltaFactor, f(x));
 
-        x += (event.deltaY||1)*(1);
+        x += 1;
 
         var r = rnd(1,30),g = rnd(1,30),b = rnd(1,30);
         var a = rnd(50,255);
