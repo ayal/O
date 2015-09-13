@@ -161,6 +161,7 @@ f = function(x) {
             origr+=10;
             r = origr;
         }*/
+alert(1);
 
         if (x >= r*3) {
             console.warn(1);
