@@ -143,7 +143,7 @@ function rnd(min, max) {
 }
 
 window.x = 0;
-window.r = $('body').height() / 3, origr = r;
+window.r = 80, origr = r;
 
 f = function(x) {
 
