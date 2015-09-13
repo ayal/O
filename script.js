@@ -155,7 +155,11 @@ f = function(x) {
 
     else {
 
-        r -= rnd(-8,8)*10;
+        r -= 10;
+        if (r < 10) {
+            origr+=10;
+            r = origr;
+        }
 
         if (x >= r*3) {
             console.warn(1);
