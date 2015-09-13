@@ -92,7 +92,7 @@ $(document)
         this.distance = this.vertical ? this.pageY - e.originalEvent.touches[0].pageY : this.pageX - e.originalEvent.touches[0].pageX; //determine distance between touches
         this.acc = Math.abs(this.distance / (i_v.i_time.touchmove - i_v.i_time.touchstart)); //calculate acceleration during movement (crucial)
           console.log(this.acc);
-          dowheel(e);
+          dowheel(e,this.acc);
         //determine which property to animate, reset animProp first for when no criteria is matched
         this.animProp = null;
         if (this.vertical && this.i_scrollableY) {
@@ -170,10 +170,10 @@ f = function(x) {
 
 };
 
-dowheel = function(e) {
+dowheel = function(e,acc) {
     console.log(event.deltaX, event.deltaY, event.deltaFactor, f(x));
 
-        x += -1 * (event.deltaY||1)*4;
+        x += -1 * (event.deltaY||1)*4*(acc||1);
 
         var r = rnd(1,30),g = rnd(1,30),b = rnd(1,30);
         var a = rnd(50,255);
