@@ -91,7 +91,7 @@ $(document)
         this.vertical = Math.abs(this.pageX - e.originalEvent.touches[0].pageX) < Math.abs(this.pageY - e.originalEvent.touches[0].pageY); //find out in which direction we are scrolling
         this.distance = this.vertical ? this.pageY - e.originalEvent.touches[0].pageY : this.pageX - e.originalEvent.touches[0].pageX; //determine distance between touches
         this.acc = Math.abs(this.distance / (i_v.i_time.touchmove - i_v.i_time.touchstart)); //calculate acceleration during movement (crucial)
-          console.log(this.acc);
+          console.log('acc vert', this.acc, this.vertical);
           dowheel(e,this.acc);
         //determine which property to animate, reset animProp first for when no criteria is matched
         this.animProp = null;
@@ -155,7 +155,7 @@ f = function(x) {
 
     else {
 
-        r -= 10;
+        r -= 30;
         if (r < 10) {
             origr+=10;
             r = origr;
@@ -184,7 +184,7 @@ dowheel = function(e,acc) {
 
         ctx.fillStyle = "rgba("+r+","+g+","+b+","+(a/255)+")";
         ctx.beginPath();
-           ctx.arc($('body').height()/2 - r + f(x)[0], $('body').height()/2+f(x)[1], rnd(1,4), 0, 2 * Math.PI, false);
+           ctx.arc($('body').width()/2 - r + f(x)[0], $('body').height()/2+f(x)[1], rnd(1,4), 0, 2 * Math.PI, false);
         ctx.fill();
 
 
