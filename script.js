@@ -148,11 +148,11 @@ window.r = $('body').height() / 3, origr = r;
 f = function(x) {
 
     if (r*r - x*x > 0) {
-      return [x,Math.sqrt(r*r- x*x)]
+      return [x,Math.floor(Math.sqrt(r*r- x*x))]
     }
     else if (Math.sqrt(r*r- (2*r-x)*(2*r-x))) {
 alert(2)
-        return [2*r-x,-Math.sqrt(r*r- (2*r-x)*(2*r-x))]
+        return [2*r-x,-Math.floor(Math.sqrt(r*r- (2*r-x)*(2*r-x)))]
     }
 
     else {
