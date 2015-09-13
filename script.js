@@ -141,8 +141,8 @@ function rnd(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-var x = 0;
-var r = $('body').height() / 3, origr = r;
+window.x = 0;
+window.r = $('body').height() / 3, origr = r;
 
 f = function(x) {
 
