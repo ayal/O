@@ -42,7 +42,7 @@ var ctx = canvas.getContext("2d");
 dowheel = function(e) {
     console.log(event.deltaX, event.deltaY, event.deltaFactor, f(x));
 
-        x += -1 * event.deltaY*2;
+        x += -1 * (event.deltaY||1)*2;
 
         var r = rnd(1,30),g = rnd(1,30),b = rnd(1,30);
         var a = rnd(50,255);
