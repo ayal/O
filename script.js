@@ -31,6 +31,7 @@ i_v.multiplier = 1;
 // Define easing function. This is based on a quartic 'out' curve. You can generate your own at http://www.timotheegroleau.com/Flash/experiments/easing_function_generator.htm
 if ($.easing.hnlinertial === undefined) {
   $.easing.hnlinertial = function (x, t, b, c, d) {
+      console.log(arguments);
     var ts = (t /= d) * t, tc = ts * t;
     return b + c * (-1 * ts * ts + 4 * tc + -6 * ts + 4 * t);
   };
