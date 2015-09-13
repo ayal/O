@@ -185,7 +185,7 @@ dowheel = function(e,acc) {
 
         ctx.fillStyle = "rgba("+r+","+g+","+b+","+(a/255)+")";
         ctx.beginPath();
-           ctx.arc($('body').width()/2 - r + f(x)[0], $('body').height()/3 - r +f(x)[1], rnd(1,4), 0, 2 * Math.PI, false);
+           ctx.arc($('body').width()/2 - r + f(x)[0], $('body').height()/2 - r +f(x)[1], rnd(1,1), 0, 2 * Math.PI, false);
         ctx.fill();
 
 
