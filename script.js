@@ -10,14 +10,14 @@ var i_v = {
   i_touchlistener: '.inertialScroll',         // element to monitor for touches, set to null to use document. Otherwise use quotes. Eg. '.myElement'. Note: if the finger leaves this listener while still touching, movement is stopped.
   i_scrollElement: '.inertialScroll',         // element (class) to be scrolled on touch movement
   i_duration: window.innerHeight * 1.5, // (ms) duration of the inertial scrolling simulation. Devices with larger screens take longer durations (phone vs tablet is around 500ms vs 1500ms). This is a fixed value and does not influence speed and amount of momentum.
-  i_speedLimit: 1.2,                      // set maximum speed. Higher values will allow faster scroll (which comes down to a bigger offset for the duration of the momentum scroll) note: touch motion determines actual speed, this is just a limit.
+  i_speedLimit: -100,                      // set maximum speed. Higher values will allow faster scroll (which comes down to a bigger offset for the duration of the momentum scroll) note: touch motion determines actual speed, this is just a limit.
   i_handleY: true,                     // should scroller handle vertical movement on element?
   i_handleX: true,                     // should scroller handle horizontal movement on element?
   i_moveThreshold: 100,                      // (ms) determines if a swipe occurred: time between last updated movement @ touchmove and time @ touchend, if smaller than this value, trigger inertial scrolling
   i_offsetThreshold: 30,                       // (px) determines, together with i_offsetThreshold if a swipe occurred: if calculated offset is above this threshold
   i_startThreshold: 5,                        // (px) how many pixels finger needs to move before a direction (horizontal or vertical) is chosen. This will make the direction detection more accurate, but can introduce a delay when starting the swipe if set too high
-  i_acceleration: 0.5,                      // increase the multiplier by this value, each time the user swipes again when still scrolling. The multiplier is used to multiply the offset. Set to 0 to disable.
-  i_accelerationT: 250                       // (ms) time between successive swipes that determines if the multiplier is increased (if lower than this value)
+  i_acceleration: 0.0000000000,                      // increase the multiplier by this value, each time the user swipes again when still scrolling. The multiplier is used to multiply the offset. Set to 0 to disable.
+  i_accelerationT: 0.000                       // (ms) time between successive swipes that determines if the multiplier is increased (if lower than this value)
 };
 /* stop editing here */
 
@@ -26,12 +26,11 @@ i_v.i_time = {};
 i_v.i_elem = null;
 i_v.i_elemH = null;
 i_v.i_elemW = null;
-i_v.multiplier = 1;
+i_v.multiplier = 0.000000000000000000000001;
 
 // Define easing function. This is based on a quartic 'out' curve. You can generate your own at http://www.timotheegroleau.com/Flash/experiments/easing_function_generator.htm
 if ($.easing.hnlinertial === undefined) {
   $.easing.hnlinertial = function (x, t, b, c, d) {
-      console.log(arguments);
     var ts = (t /= d) * t, tc = ts * t;
     return b + c * (-1 * ts * ts + 4 * tc + -6 * ts + 4 * t);
   };
@@ -92,8 +91,7 @@ $(document)
         this.vertical = Math.abs(this.pageX - e.originalEvent.touches[0].pageX) < Math.abs(this.pageY - e.originalEvent.touches[0].pageY); //find out in which direction we are scrolling
         this.distance = this.vertical ? this.pageY - e.originalEvent.touches[0].pageY : this.pageX - e.originalEvent.touches[0].pageX; //determine distance between touches
         this.acc = Math.abs(this.distance / (i_v.i_time.touchmove - i_v.i_time.touchstart)); //calculate acceleration during movement (crucial)
-          console.log('acc vert', this.acc, this.vertical);
-          dowheel(e,this.acc);
+
         //determine which property to animate, reset animProp first for when no criteria is matched
         this.animProp = null;
         if (this.vertical && this.i_scrollableY) {
@@ -119,20 +117,38 @@ $(document)
           if (this.animProp) {
             this.animPar1[this.animProp] = i_v.i_elem.data(this.animProp) + this.distance + this.offset;
           }
-          this.animPar2 = {
+            this.animPar2 = {
             duration: i_v.i_duration, easing: 'hnlinertial', complete: function () {
               //reset multiplier
               i_v.multiplier = 1;
+            }, step: function(v) {
+
             }
           };
         }
         break;
       }
 
-      // run the animation on the element
-      if ((this.i_scrollableY || this.i_scrollableX) && this.animProp) {
-        i_v.i_elem.stop(true, false).animate(this.animPar1, this.animPar2);
+        // run the animation on the element
+        if ((this.i_scrollableY || this.i_scrollableX) && this.animProp) {
+          i_v.i_elem.stop(true, false).animate(this.animPar1, this.animPar2);
       }
+
+        var dod = this.distance + this.offset;
+
+        $({z:window.x}).stop(true, false).animate({z: window.x + this.distance + this.offset},{
+            duration: i_v.i_duration, easing: 'hnlinertial', complete: function () {
+              //reset multiplier
+              i_v.multiplier = 1;
+            }, step: function(v) {
+                if (v) {
+                    console.log(v);
+                window.x = v ;
+                dowheel();
+                }
+            }
+          });
+
     }
   });
 
@@ -143,51 +159,44 @@ function rnd(min, max) {
 }
 
 window.x = 0;
-window.r = 80, origr = r;
+window.r = $('body').height() / 3, origr = r;
 
 f = function(x) {
-
-    if (r*r - x*x > 0) {
+    x = x % (4 * r);
+    if (x < r) {
       return [x,Math.floor(Math.sqrt(r*r- x*x))]
     }
-    else if (Math.sqrt(r*r- (2*r-x)*(2*r-x))) {
+    else if (x >= r && x < 2*r ) {
 
-        return [2*r-x,-Math.floor(Math.sqrt(r*r- (2*r-x)*(2*r-x)))]
+        return [2*r-x,-Math.sqrt(r*r- (2*r-x)*(2*r-x))]
     }
+    else if (x >= 2*r && x < 3*r ) {
 
+        return [2*r-x,-Math.sqrt(r*r- (2*r-x)*(2*r-x))]
+    }
+    else if (x >= 3*r && x < 4*r - 5 ) {
+        return [x-4*r,Math.sqrt(r*r - (x-4*r)*(x-4*r))]
+    }
     else {
-
-       r -= 50;
+        var tr = r;
+        r -= rnd(1,10);
         if (r < 10) {
-            origr+=10;
-            r = origr;
+            origr += 20;
+            r = origr;;
         }
-
-
-        if (x >= r*3) {
-            console.warn(1);
-      window.x = 0-r+1;
-        }
-        else if (x <= 0-r) {
-            console.warn(2);
-      window.x = x + 4*r;
-        }
-      return f(window.x);
+        return [x-4*tr,Math.sqrt(tr*tr - (x-4*tr)*(x-4*tr))]
     }
 
 };
 
 dowheel = function(e,acc) {
-    console.log(event.deltaX, event.deltaY, event.deltaFactor, f(x));
-
-        x += 1;
-
         var r = rnd(1,30),g = rnd(1,30),b = rnd(1,30);
-        var a = rnd(50,255);
+        var a = rnd(10,50);
+
 
         ctx.fillStyle = "rgba("+r+","+g+","+b+","+(a/255)+")";
         ctx.beginPath();
-           ctx.arc($('body').width()/2 - r + f(x)[0], $('body').height()/2 - r +f(x)[1], 1, 0, 2 * Math.PI, false);
+           ctx.arc($('body').width()/2 + f(x)[0], $('body').height()/2 +f(x)[1], rnd(1,3), 0, 2 * Math.PI, false);
         ctx.fill();
 
 
@@ -199,11 +208,6 @@ dowheel = function(e,acc) {
     canvas.height = $('body').height();
 var ctx = canvas.getContext("2d");
 
-
-
-    $('canvas').on('mousewheel', function(event) {
-dowheel(e);
-    });
 
 
 })
