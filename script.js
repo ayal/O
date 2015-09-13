@@ -157,11 +157,11 @@ alert(2)
 
     else {
 
-       /* r -= 50;
+       r -= 50;
         if (r < 10) {
             origr+=10;
             r = origr;
-        }*/
+        }
 
 
         if (x >= r*3) {
@@ -187,7 +187,7 @@ dowheel = function(e,acc) {
 
         ctx.fillStyle = "rgba("+r+","+g+","+b+","+(a/255)+")";
         ctx.beginPath();
-           ctx.arc($('body').width()/2 - r + f(x)[1], $('body').height()/2 - r +f(x)[1], 1, 0, 2 * Math.PI, false);
+           ctx.arc($('body').width()/2 - r + f(x)[0], $('body').height()/2 - r +f(x)[1], 1, 0, 2 * Math.PI, false);
         ctx.fill();
 
 
