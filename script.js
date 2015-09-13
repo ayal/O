@@ -156,7 +156,7 @@ f = function(x) {
 
     else {
 
-        r -= 30;
+        r -= 50;
         if (r < 10) {
             origr+=10;
             r = origr;
