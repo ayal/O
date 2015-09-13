@@ -36,7 +36,7 @@ if ($.easing.hnlinertial === undefined) {
   };
 }
 
-$(i_v.i_touchlistener || document)
+$(document)
   .on('touchstart touchmove touchend', function (e) {
     //prevent default scrolling
     e.preventDefault();
