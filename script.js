@@ -156,11 +156,11 @@ f = function(x) {
 
     else {
 
-        r -= 50;
+       /* r -= 50;
         if (r < 10) {
             origr+=10;
             r = origr;
-        }
+        }*/
 
         if (x >= r*3) {
             console.warn(1);
