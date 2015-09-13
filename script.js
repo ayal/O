@@ -1,12 +1,7 @@
-/* */
 
-/**
- * jQuery inertial Scroller v1.5
- * (c)2013 hnldesign.nl
- * This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0/.
- *
- * More information: http://www.hnldesign.nl/work/code/momentum-scrolling-using-jquery/
- */
+
+$(function(){
+
 /*jslint browser: true*/
 /*global $, jQuery*/
 
@@ -36,7 +31,6 @@ i_v.multiplier = 1;
 // Define easing function. This is based on a quartic 'out' curve. You can generate your own at http://www.timotheegroleau.com/Flash/experiments/easing_function_generator.htm
 if ($.easing.hnlinertial === undefined) {
   $.easing.hnlinertial = function (x, t, b, c, d) {
-    "use strict";
     var ts = (t /= d) * t, tc = ts * t;
     return b + c * (-1 * ts * ts + 4 * tc + -6 * ts + 4 * t);
   };
@@ -44,14 +38,12 @@ if ($.easing.hnlinertial === undefined) {
 
 $(i_v.i_touchlistener || document)
   .on('touchstart touchmove touchend', function (e) {
-    "use strict";
     //prevent default scrolling
     e.preventDefault();
     //store timeStamp for this event
     i_v.i_time[e.type] = e.timeStamp;
   })
   .on('touchstart', function (e) {
-    "use strict";
     this.tarElem = $(e.target);
     this.elemNew = this.tarElem.closest(i_v.i_scrollElement).length > 0 ? this.tarElem.closest(i_v.i_scrollElement) : $(i_v.i_scrollElement).eq(0);
     //dupecheck, optimizes code a bit for when the element selected is still the same as last time
@@ -196,8 +188,6 @@ dowheel = function(e) {
 
 }
 
-
-$(function(){
 
     var canvas = document.getElementById("canvas");
     canvas.width = $('body').width();
