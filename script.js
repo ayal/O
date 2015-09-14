@@ -162,7 +162,10 @@ window.x = 0;
 window.r = $('body').height() / 3, origr = r;
 
 f = function(x) {
-    x = x % (4 * r);
+    window.x = x = x % (4 * r);
+    while (x < 0) {
+        window.x = x = 3*r - x;
+    }
     if (x < r) {
       return [x,Math.floor(Math.sqrt(r*r- x*x))]
     }
@@ -190,8 +193,8 @@ f = function(x) {
 };
 
 dowheel = function(e,acc) {
-        var r = rnd(1,30),g = rnd(1,30),b = rnd(1,30);
-        var a = rnd(10,50);
+        var r = rnd(1,130),g = rnd(1,130),b = rnd(1,130);
+        var a = rnd(10,40);
 
 
         ctx.fillStyle = "rgba("+r+","+g+","+b+","+(a/255)+")";
@@ -208,6 +211,12 @@ dowheel = function(e,acc) {
     canvas.height = $('body').height();
 var ctx = canvas.getContext("2d");
 
+
+    $('body').on('mousewheel', function(event) {
+        console.log(event.deltaY);
+        window.x += event.deltaY*15;
+        dowheel();
+    });
 
 
 })
