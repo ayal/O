@@ -10,14 +10,14 @@ var i_v = {
   i_touchlistener: '.inertialScroll',         // element to monitor for touches, set to null to use document. Otherwise use quotes. Eg. '.myElement'. Note: if the finger leaves this listener while still touching, movement is stopped.
   i_scrollElement: '.inertialScroll',         // element (class) to be scrolled on touch movement
   i_duration: window.innerHeight * 1.5, // (ms) duration of the inertial scrolling simulation. Devices with larger screens take longer durations (phone vs tablet is around 500ms vs 1500ms). This is a fixed value and does not influence speed and amount of momentum.
-  i_speedLimit: -100,                      // set maximum speed. Higher values will allow faster scroll (which comes down to a bigger offset for the duration of the momentum scroll) note: touch motion determines actual speed, this is just a limit.
+  i_speedLimit: -10000,                      // set maximum speed. Higher values will allow faster scroll (which comes down to a bigger offset for the duration of the momentum scroll) note: touch motion determines actual speed, this is just a limit.
   i_handleY: true,                     // should scroller handle vertical movement on element?
   i_handleX: true,                     // should scroller handle horizontal movement on element?
-  i_moveThreshold: 100,                      // (ms) determines if a swipe occurred: time between last updated movement @ touchmove and time @ touchend, if smaller than this value, trigger inertial scrolling
-  i_offsetThreshold: 30,                       // (px) determines, together with i_offsetThreshold if a swipe occurred: if calculated offset is above this threshold
+  i_moveThreshold: 1,                      // (ms) determines if a swipe occurred: time between last updated movement @ touchmove and time @ touchend, if smaller than this value, trigger inertial scrolling
+  i_offsetThreshold: 3000,                       // (px) determines, together with i_offsetThreshold if a swipe occurred: if calculated offset is above this threshold
   i_startThreshold: 5,                        // (px) how many pixels finger needs to move before a direction (horizontal or vertical) is chosen. This will make the direction detection more accurate, but can introduce a delay when starting the swipe if set too high
-  i_acceleration: 0.0000000000,                      // increase the multiplier by this value, each time the user swipes again when still scrolling. The multiplier is used to multiply the offset. Set to 0 to disable.
-  i_accelerationT: 0.000                       // (ms) time between successive swipes that determines if the multiplier is increased (if lower than this value)
+  i_acceleration: 0,                      // increase the multiplier by this value, each time the user swipes again when still scrolling. The multiplier is used to multiply the offset. Set to 0 to disable.
+  i_accelerationT: 0                       // (ms) time between successive swipes that determines if the multiplier is increased (if lower than this value)
 };
 /* stop editing here */
 
@@ -26,7 +26,7 @@ i_v.i_time = {};
 i_v.i_elem = null;
 i_v.i_elemH = null;
 i_v.i_elemW = null;
-i_v.multiplier = 0.000000000000000000000001;
+i_v.multiplier = 10;
 
 // Define easing function. This is based on a quartic 'out' curve. You can generate your own at http://www.timotheegroleau.com/Flash/experiments/easing_function_generator.htm
 if ($.easing.hnlinertial === undefined) {
@@ -69,6 +69,7 @@ $(document)
       //else reset multiplier
       i_v.multiplier = 1;
     }
+    z.stop(true,false);
     i_v.i_elem
       //stop any animations still running on element (this enables 'tap to stop')
       .stop(true, false)
@@ -90,6 +91,7 @@ $(document)
       case 'touchmove':
         this.vertical = Math.abs(this.pageX - e.originalEvent.touches[0].pageX) < Math.abs(this.pageY - e.originalEvent.touches[0].pageY); //find out in which direction we are scrolling
         this.distance = this.vertical ? this.pageY - e.originalEvent.touches[0].pageY : this.pageX - e.originalEvent.touches[0].pageX; //determine distance between touches
+          console.warn('distance', this.distance, e.originalEvent.touches[0].pageY, this.pageY);
         this.acc = Math.abs(this.distance / (i_v.i_time.touchmove - i_v.i_time.touchstart)); //calculate acceleration during movement (crucial)
 
         //determine which property to animate, reset animProp first for when no criteria is matched
@@ -136,72 +138,88 @@ $(document)
 
         var dod = this.distance + this.offset;
 
-        $({z:window.x}).stop(true, false).animate({z: window.x + this.distance + this.offset},{
-            duration: i_v.i_duration, easing: 'hnlinertial', complete: function () {
-              //reset multiplier
-              i_v.multiplier = 1;
-            }, step: function(v) {
-                if (v) {
-                    console.log(v);
-                window.x = v ;
-                dowheel();
-                }
-            }
-          });
+        var i = 0;
 
-    }
+//        if ( !animating) {
+            console.log('animating', window.x.x, this.distance, this.offset);
+            animating = true;
+            z.attr({z:window.x.x}).stop(true, false).animate({z: window.x.x + this.distance},{
+                duration: i_v.i_duration, easing: 'hnlinertial', complete: function () {
+                    //reset multiplier
+                    i_v.multiplier = 10;
+                    animating = false;
+                    console.log('finished');
+                    document.distance = 0;
+
+                }, step: function(v) {
+                    if (v) {
+                        console.log(i++, x, r);
+                        window.x.x = v.mod(4*r) ;
+                        z.attr({z:window.x.x});
+                        r-=0.1;
+                        if (r < 10) {
+                            origr += 20;
+                            r = origr;;
+                        }
+
+                        dowheel();
+                    }
+                }
+            });
+        }
+
+//    }
   });
 
+        window.animating = false;
 /* touchmove */
 
 function rnd(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-window.x = 0;
+Number.prototype.mod = function(n) {
+    return ((this%n)+n)%n;
+};
+
 window.r = $('body').height() / 3, origr = r;
+window.x = {x:0};
+window.z = $({z:window.x.x});
 
 f = function(x) {
-    window.x = x = x % (4 * r);
-    while (x < 0) {
-        window.x = x = 3*r - x;
-    }
-    if (x < r) {
+    if (x < r && x > -r) {
       return [x,Math.floor(Math.sqrt(r*r- x*x))]
     }
-    else if (x >= r && x < 2*r ) {
-
+    else if ((x >= r && x < 2*r) ) {
         return [2*r-x,-Math.sqrt(r*r- (2*r-x)*(2*r-x))]
     }
     else if (x >= 2*r && x < 3*r ) {
-
         return [2*r-x,-Math.sqrt(r*r- (2*r-x)*(2*r-x))]
     }
-    else if (x >= 3*r && x < 4*r - 5 ) {
+    else if ((x >= 3*r && x < 4*r) ) {
         return [x-4*r,Math.sqrt(r*r - (x-4*r)*(x-4*r))]
     }
-    else {
-        var tr = r;
-        r -= rnd(1,10);
-        if (r < 10) {
-            origr += 20;
-            r = origr;;
-        }
-        return [x-4*tr,Math.sqrt(tr*tr - (x-4*tr)*(x-4*tr))]
+    else if (x > -2*r && x < -r)  {
+        return [-2*r - x,-Math.sqrt(r*r- (-2*r - x)*(-2*r - x))]
+    }
+    else if (x > -3*r && x < -2*r)   {
+        return [-2*r - x,-Math.sqrt(r*r- (-2*r - x)*(-2*r - x))]
+    }
+    else if ((x > -4*r && x < -3*r)) {
+        return [4*r + x,Math.sqrt(r*r- (4*r + x)*(4*r + x))]
+
     }
 
 };
 
 dowheel = function(e,acc) {
-        var r = rnd(1,130),g = rnd(1,130),b = rnd(1,130);
-        var a = rnd(10,40);
-
-
-        ctx.fillStyle = "rgba("+r+","+g+","+b+","+(a/255)+")";
-        ctx.beginPath();
-           ctx.arc($('body').width()/2 + f(x)[0], $('body').height()/2 +f(x)[1], rnd(1,3), 0, 2 * Math.PI, false);
-        ctx.fill();
-
+    var r = rnd(1,130),g = rnd(1,130),b = rnd(1,130);
+    var a = rnd(40,100);
+    ctx.fillStyle = "rgba("+r+","+g+","+b+","+(a/255)+")";
+    ctx.beginPath();
+    var fx = f(window.x.x);
+    ctx.arc($('body').width()/2 + fx[0], $('body').height()/2 +fx[1], rnd(1,4), 0, 2 * Math.PI, false);
+    ctx.fill();
 
 }
 
@@ -210,13 +228,6 @@ dowheel = function(e,acc) {
     canvas.width = $('body').width();
     canvas.height = $('body').height();
 var ctx = canvas.getContext("2d");
-
-
-    $('body').on('mousewheel', function(event) {
-        console.log(event.deltaY);
-        window.x += event.deltaY*15;
-        dowheel();
-    });
 
 
 })
